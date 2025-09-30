@@ -1,20 +1,18 @@
-import React, { useState } from 'react'
-import ReelList from '../components/ReelList'
-import UploadModal from '../components/UploadModal'
-import CommentModal from '../components/CommentModal'
 
+import React, { useEffect, useState } from 'react'
+import ReelList from '../components/ReelList'
+import { recommendationService } from '../services/recommendationService'
 
 export default function Home(){
-const [uploadOpen, setUploadOpen] = useState(false)
-const [commentReel, setCommentReel] = useState(null)
+  const [mode, setMode] = useState('recommended') // recommended | chronological
 
-
-return (
-<div className="max-w-3xl mx-auto">
-<button onClick={()=>setUploadOpen(true)} className="hidden">Open upload (header shows button)</button>
-<ReelList onOpenComments={(r)=>setCommentReel(r)} />
-{uploadOpen && <UploadModal onClose={()=>setUploadOpen(false)} onUploaded={()=>{}} />}
-{commentReel && <CommentModal reel={commentReel} onClose={()=>setCommentReel(null)} onCommentAdded={()=>{}} />}
-</div>
-)
+  return (
+    <div className="max-w-3xl mx-auto">
+      <div className="p-3 flex gap-2 justify-center">
+        <button onClick={() => setMode('recommended')} className={`px-3 py-1 rounded ${mode==='recommended'?'bg-white text-black':''}`}>Recommended</button>
+        <button onClick={() => setMode('chronological')} className={`px-3 py-1 rounded ${mode==='chronological'?'bg-white text-black':''}`}>Chronological</button>
+      </div>
+      <ReelList feedMode={mode}/>
+    </div>
+  )
 }
