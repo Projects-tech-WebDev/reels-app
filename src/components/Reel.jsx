@@ -2,6 +2,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import useInViewPlay from '../hooks/useInViewPlay'
 import { reelsService } from '../services/reelsService'
+import { recommendationService } from '../services/recommendationService'
 
 export default function Reel({ reel: initialReel, onOpenComments }) {
   const videoRef = useRef(null)
@@ -70,3 +71,15 @@ useEffect(() => {
     </div>
   )
 }
+useEffect(() => {
+  const v = videoRef.current
+  if (!v) return
+  const onPlay = () => recommendationService.log('impression', { reelId: initialReel.id })
+  const onEnded = () => recommendationService.log('watchComplete', { reelId: initialReel.id })
+  v.addEventListener('play', onPlay)
+  v.addEventListener('ended', onEnded)
+  return () => {
+    v.removeEventListener('play', onPlay)
+    v.removeEventListener('ended', onEnded)
+  }
+}, [initialReel.id])
